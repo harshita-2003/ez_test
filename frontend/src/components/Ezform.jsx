@@ -16,6 +16,7 @@ const Form = () => {
         reset,
         setValue,
         clearErrors,
+        setError,
     } = useForm({
         resolver: zodResolver(formSchema),
         mode: "onSubmit",
@@ -26,10 +27,12 @@ const Form = () => {
             const response = await submitForm(data.email);
             toast.success("Form successfully submitted")
             console.log(response)
-
             reset();
         } catch (error) {
-            toast.error(error.message || "Submission Failed")
+            if (error.message.includes("Validation Error")) {
+                setError("email", { type: "manual", message: error.message });
+            }
+            toast.error(error.message || "Submission Failed");
         }
     }
 
